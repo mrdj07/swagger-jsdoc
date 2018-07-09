@@ -23,7 +23,7 @@ describe('swagger-helpers submodule', function () {
     done();
   });
 
-  it('addDataToSwaggerObject() handles "definition" and "definitions"', function(done) {
+  it('addDataToSwaggerObject() handles "definition" and "definitions"', function (done) {
     swaggerHelpers.addDataToSwaggerObject(swaggerObject, testData.definitions);
     expect(swaggerObject.definitions).to.exist;
     // Case 'definition'.
@@ -33,7 +33,7 @@ describe('swagger-helpers submodule', function () {
     done();
   });
 
-  it('addDataToSwaggerObject() handles "parameter" and "parameters"', function(done) {
+  it('addDataToSwaggerObject() handles "parameter" and "parameters"', function (done) {
     swaggerHelpers.addDataToSwaggerObject(swaggerObject, testData.parameters);
     expect(swaggerObject.parameters).to.exist;
     // Case 'parameter'.
@@ -43,7 +43,7 @@ describe('swagger-helpers submodule', function () {
     done();
   });
 
-  it('addDataToSwaggerObject() handles "securityDefinition" and "securityDefinitions"', function(done) {
+  it('addDataToSwaggerObject() handles "securityDefinition" and "securityDefinitions"', function (done) {
     swaggerHelpers.addDataToSwaggerObject(swaggerObject, testData.securityDefinitions);
     expect(swaggerObject.securityDefinitions).to.exist;
     // Case 'securityDefinition'.
@@ -53,7 +53,7 @@ describe('swagger-helpers submodule', function () {
     done();
   });
 
-  it('addDataToSwaggerObject() handles "response" and "responses"', function(done) {
+  it('addDataToSwaggerObject() handles "response" and "responses"', function (done) {
     swaggerHelpers.addDataToSwaggerObject(swaggerObject, testData.responses);
     expect(swaggerObject.responses).to.exist;
     // Case 'response'.
@@ -68,14 +68,28 @@ describe('swagger-helpers submodule', function () {
     expect(typeof(swaggerHelpers.swaggerizeObj)).to.equal('function');
     done();
   });
+
   it('swagerizeObj should remove keys specified from the blacklisted keys', function (done) {
-      var testObject = {
-          valid: 'Valid Key',
-          apis: 'Invalid Key'
-      }
-      testObject = swaggerHelpers.swaggerizeObj(testObject);
-      expect(testObject.apis).to.be.undefined;
-      done();
+    var testObject = {
+      valid: 'Valid Key',
+      apis: 'Invalid Key'
+    }
+    testObject = swaggerHelpers.swaggerizeObj(testObject);
+    expect(testObject.apis).to.be.undefined;
+    done();
+  });
+
+  it('paths should not override each other', function (done) {
+    var swagger = require('../lib');
+
+    var testObject = {
+      swaggerDefinition: {},
+      apis: ['./**/*/external/*.yml']
+    };
+
+    testObject = swagger(testObject);
+    expect(testObject.responses.api).to.include.keys(['foo', 'bar']);
+    done();
   });
 
 });
